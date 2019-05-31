@@ -59,3 +59,5 @@ Temporary Items
 *.wad.backup1
 *.wad.backup2
 *.wad.backup3
+# vs code folder
+.vscode
