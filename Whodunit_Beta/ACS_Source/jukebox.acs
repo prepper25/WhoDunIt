@@ -51,7 +51,7 @@ delay (40);
 print (s:"\cqconfiguring buttoms: 90% \cgIIIIIIIIIIIIIIIIII\cqII");
 delay (30);
 print (s:"\cqconfiguring buttoms successful : 100% \cIIIIIIIIIIIIIIIIIIII");
-  //necesary delay to work well
+  //necessary delay to work well
 print(s:"\cr[]IIIIIIIIIIIIIIIIIIII[]");
 delay(1);
 print(s:"\cr[]IIIIIIIIIIIIII[]");
