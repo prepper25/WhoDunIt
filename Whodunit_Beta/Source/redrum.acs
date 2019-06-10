@@ -635,33 +635,30 @@ function int sqractordistance(int fromTID, int toTID) {
 	return x * x + y * y + z * z;
 }
 
-function int findplayerback(int tid, int minDistance) {
-	int selected = -1;
-	minDistance = minDistance * minDistance;
-
-	for (int i = 0; i < 32; i++) {
-		int candidateTID = GetPlayerTID(i);
-		if (candidateTID != tid) {
-			int distance = SqrActorDistance(tid, candidateTID);
-			if (distance <= minDistance) {
-				int vang = VectorAngle (GetActorX (candidateTID) - GetActorX (tid), GetActorY (candidateTID) - GetActorY (tid));
-				int screenAngle = (vang - GetActorAngle(tid) + 1.0) % 1.0;
-				int orientationAngle = (GetActorAngle(candidateTID) - GetActorAngle(tid) + 1.0) % 1.0;
-
-				//if ((screenAngle < 0.075 || screenAngle > 0.925) &&
-				if ((screenAngle < 0.072 || screenAngle > 0.877) &&
-						//(orientationAngle < 0.1 || orientationAngle > 0.9)) {
-						(orientationAngle < 0.13 || orientationAngle > 0.87)) {
-					//                    Print(s:"In range!");
-					selected = i;
-					break;
-					//minDistance = distance;
-				}
+function bool findplayerback(void) {
+int attackerTID = ActivatorTID();
+	// Check if the attacker is aiming at a shootable target.
+	if(SetActivatorToTarget(0))
+	{
+		// If the target isn't a live player, return false;
+		if(!(ClassifyActor(0) & (ACTOR_PLAYER | ACTOR_ALIVE)))
+		{
+			return false;
+		}
+		// Check if the distance between the two actors is less than or equal to the maximum distance (72 map units).
+		if(fdistance(0, attackerTID) <= 72.0)
+		{
+			int vang = VectorAngle(GetActorX(0) - GetActorX(attackerTID), GetActorY(0) - GetActorY(attackerTID));
+			int screenAngle = (vang - GetActorAngle(attackerTID) + 1.0) % 1.0;
+			int orientationAngle = (GetActorAngle(0) - GetActorAngle(attackerTID) + 1.0) % 1.0;
+			// If the attacker is facing towards its target's back, return true.
+			if((screenAngle < 0.072 || screenAngle > 0.877) && (orientationAngle < 0.13 || orientationAngle > 0.87))
+			{
+				return true;
 			}
 		}
 	}
-
-	return selected;
+	return false;	
 }
 
 function int wdi_scoreplayer (void) // Scoring

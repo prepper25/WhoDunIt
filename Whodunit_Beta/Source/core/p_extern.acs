@@ -104,13 +104,9 @@ script "AUTO_CONFIG" open
 	Delay(1);
 }
 
-script 555 (void) // Backstab script
+Script 555 (void) // Backstab script
 {
-	if (FindPlayerBack(ActivatorTID(), 72) != -1) {
-		SetResultValue(TRUE);
-	} else {
-		SetResultValue(FALSE);
-	}
+	SetResultValue(findplayerback());
 }
 
 script 652 (void)

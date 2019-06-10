@@ -43,12 +43,12 @@ V4.0 Rigorously Re-Written by Theshooter7 (again)
 //functions,vars
 #Import "redrum.acs"
 //sublibrary
-#include "p_game_generic.acs"
-#include "p_Health.acs"
-#include "p_penalties.acs"
-#include "p_client.acs"
-#include "p_extern.acs"
-#include "m_antighost.acs"
+#include "./core/p_game_generic.acs"
+#include "./core/p_Health.acs"
+#include "./core/p_penalties.acs"
+#include "./core/p_client.acs"
+#include "./core/p_extern.acs"
+#include "./core/m_antighost.acs"
 
 int x, y, z;
 
