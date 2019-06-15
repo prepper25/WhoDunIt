@@ -840,6 +840,10 @@ Weapons/Bullet3			Dscasin3
 Weapons/Bullet4			Dscasin4//MISSED
 $Random Weapons/Casing1		{Weapons/Bullet1 Weapons/Bullet2 Weapons/Bullet3 Weapons/Bullet4}
 
+//FireAxe
+weapons/axebang CLANG
+silent DSEMPTY
+
 //===========================================
 //Murder Knife
 Weapons/KnifeReady	DSKNFEUP
