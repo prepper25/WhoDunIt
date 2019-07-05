@@ -147,7 +147,8 @@ script 400 open //This script handles running the game mode progression, mostly 
 	// safety period
 	while(gameinfo[CLIENT_SAFETIMER] > 0)
 	{
-		SetPlayerProperty(1,1,PROP_INVULNERABILITY);
+		Wdi_Setinvulnerable(TRUE);
+		//SetPlayerProperty(1,2,PROP_INVULNERABILITY);
 		SetPlayerProperty(1,0,PROP_FROZEN);
 		SetPlayerProperty(1,0,PROP_TOTALLYFROZEN);
 		SetPlayerProperty(1,0,PROP_FLY);
@@ -197,7 +198,8 @@ script 400 open //This script handles running the game mode progression, mostly 
 	UpdateClient(ARRAY_PLAYINFO, CLIENT_STARTPLAYERS, playinfo[5]);
 	gameinfo[1] = GAMESTATE_GAMEACTIVE;
 	UpdateClient(ARRAY_GAMEINFO, CLIENT_GAMESTATE, gameinfo[1]);
-	SetPlayerProperty(1,0,PROP_INVULNERABILITY);
+	Wdi_Setinvulnerable(FALSE);
+	//SetPlayerProperty(1,0,PROP_INVULNERABILITY);
 	remainingpercentage = (FixedDiv(Int2Fix(playinfo[0]),Int2Fix(playinfo[1])) * 100) >> 16;
 	UpdateClient(3, 0, remainingpercentage);
 
@@ -210,7 +212,8 @@ script 400 open //This script handles running the game mode progression, mostly 
 	int loopcount = 0;
 	while(gameinfo[1] == GAMESTATE_GAMEACTIVE)	// now the actual game begins
 	{
-		SetPlayerProperty(1,0,PROP_INVULNERABILITY);
+	Wdi_Setinvulnerable(FALSE);
+		//SetPlayerProperty(1,0,PROP_INVULNERABILITY);
 		if(!murdinfo[0])
 		{
 			SetFont("BigFont");
@@ -293,7 +296,8 @@ script 400 open //This script handles running the game mode progression, mostly 
 	}
 
 	SetPlayerProperty(1,1,PROP_TOTALLYFROZEN);
-	SetPlayerProperty(1,1,PROP_INVULNERABILITY);
+	Wdi_Setinvulnerable(TRUE);
+	//SetPlayerProperty(1,2,PROP_INVULNERABILITY);
 	ACS_Namedexecute("tkrs",0); //reveal all the tks in rcon
 	SetHUDSize(640, 480, 0); //320.0, 240.0 center.
 	SetFont("Smallfont");
@@ -306,6 +310,7 @@ script 400 open //This script handles running the game mode progression, mostly 
 	tallycounts[1] -= tallycounts[0]; // Subtract the murderer's kills from the total game kills to get the amount of Team Kills.
 
 	//=== Murderer Info (Health / Sanity) / Suicide, etc ===//
+	int score_player = wdi_scoreplayer();
 	int thehero = -1;
 	switch(playinfo[4])
 	{
@@ -318,7 +323,7 @@ script 400 open //This script handles running the game mode progression, mostly 
 		murdinfo[5] = CheckActorInventory(TID_START+gameinfo[2], "NoiseMakerUsed");
 		murdinfo[6] = CheckActorInventory(TID_START+gameinfo[2], "StimUsed");
 		murdinfo[7] = CheckActorInventory(TID_START+gameinfo[2], "BackStabCount");
-		HudMessageBold(s:"GAME OVER: ", n:gameinfo[2]+1, s:" \ccwins with a score of \ck", d:(FixedDiv(Int2Fix(wdi_scoreplayer()),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%", s:" (", d:wdi_scoreplayer(), s:" / ", d:(10 * playinfo[1]), s:") ";  HUDMSG_PLAIN | HUDMSG_LOG, 1, CR_WHITE, 0.0, 0.0, 0.001);
+		HudMessageBold(s:"GAME OVER: ", n:gameinfo[2]+1, s:" \ccwins with a score of \ck", d:(FixedDiv(Int2Fix(score_player),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%", s:" (", d:score_player, s:" / ", d:(10 * playinfo[1]), s:") ";  HUDMSG_PLAIN | HUDMSG_LOG, 1, CR_WHITE, 0.0, 0.0, 0.001);
 		HudMessageBold(s:""; HUDMSG_PLAIN, 1, CR_WHITE, 0.0, 0.0, 0.1);
 		SetFont("Smallfont");
 		HudMessageBold(s:"\cgHealth: ", d:tallycounts[3], s:" / ", d:(FixedDiv(Int2Fix(tallycounts[2]),Int2Fix(500)) * 100) >> 16, s:"% :Sanity";  HUDMSG_FADEOUT, 0, CR_RED, 320.0, 44.0, 35.0, 1.0);
@@ -341,12 +346,12 @@ script 400 open //This script handles running the game mode progression, mostly 
 			HudMessageBold(s:"\cc---", n:thehero+1, s:"\cc---";  HUDMSG_FADEOUT, 0, CR_UNTRANSLATED, 320.0, 52.0, 35.0, 1.0);
 		}
 		// Put this at the end so it shows the killer's name properly
-		HudMessageBold(s:"GAME OVER: ", n:gameinfo[2]+1, s:" \ccwas killed by ", n:thehero+1, s:" \ccand scored \ck", d:(FixedDiv(Int2Fix(wdi_scoreplayer()),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%", s:" (", d:wdi_scoreplayer(), s:" / ", d:(10 * playinfo[1]), s:") ";  HUDMSG_PLAIN | HUDMSG_LOG, 1, CR_WHITE, 0.0, 0.0, 0.001);
+		HudMessageBold(s:"GAME OVER: ", n:gameinfo[2]+1, s:" \ccwas killed by ", n:thehero+1, s:" \ccand scored \ck", d:(FixedDiv(Int2Fix(score_player),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%", s:" (", d:score_player, s:" / ", d:(10 * playinfo[1]), s:") ";  HUDMSG_PLAIN | HUDMSG_LOG, 1, CR_WHITE, 0.0, 0.0, 0.001);
 		HudMessageBold(s:""; HUDMSG_PLAIN, 1, CR_WHITE, 0.0, 0.0, 0.1);
 		break;
 
 		Case END_MURSUICIDE: //Suicide (By Sanity loss or otherwise)
-		HudMessageBold(s:"GAME OVER: ", n:gameinfo[2]+1, s:" \ccran out of sanity and scored \ck", d:(FixedDiv(Int2Fix(wdi_scoreplayer()),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%", s:" (", d:wdi_scoreplayer(), s:" / ", d:(10 * playinfo[1]), s:") ";  HUDMSG_LOG, 0, CR_WHITE, 0.0, 0.0, 0.001);
+		HudMessageBold(s:"GAME OVER: ", n:gameinfo[2]+1, s:" \ccran out of sanity and scored \ck", d:(FixedDiv(Int2Fix(score_player),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%", s:" (", d:score_player, s:" / ", d:(10 * playinfo[1]), s:") ";  HUDMSG_LOG, 0, CR_WHITE, 0.0, 0.0, 0.001);
 		HudMessageBold(s:""; HUDMSG_PLAIN, 1, CR_WHITE, 0.0, 0.0, 0.1);
 		SetFont("Smallfont");
 		HudMessageBold(s:"Mental Breakdown";  HUDMSG_FADEOUT, 0, CR_RED, 320.0, 44.0, 35.0, 1.0);
@@ -426,11 +431,11 @@ script 400 open //This script handles running the game mode progression, mostly 
 	SetFont("Bigfont");
 	HudMessageBold(s:"\cc---\cgRanking\cc---"; HUDMSG_FADEOUT, 0, CR_RED, 320.0, 324.0, 35.0, 1.0);
 	Delay(35*3);
-	int percentage = (FixedDiv(Int2Fix(wdi_scoreplayer()),Int2Fix(10 * playinfo[1])) * 100) >> 16;
+	int percentage = (FixedDiv(Int2Fix(score_player),Int2Fix(10 * playinfo[1])) * 100) >> 16;
 	SetFont("Bigfont");
-	HudMessageBold(d:(FixedDiv(Int2Fix(wdi_scoreplayer()),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%"; HUDMSG_FADEOUT, 0, CR_WHITE, 320.0, 342.0, 35.0, 1.0);
+	HudMessageBold(d:(FixedDiv(Int2Fix(score_player),Int2Fix(10 * playinfo[1])) * 100) >> 16, s:"%"; HUDMSG_FADEOUT, 0, CR_WHITE, 320.0, 342.0, 35.0, 1.0);
 	SetFont("SMALLFONT");
-	HudMessageBold(d:wdi_scoreplayer(), s:" / ", d:(10 * playinfo[1]); HUDMSG_FADEOUT, 0, CR_WHITE, 320.0, 365.0, 35.0, 1.0);
+	HudMessageBold(d:score_player, s:" / ", d:(10 * playinfo[1]); HUDMSG_FADEOUT, 0, CR_WHITE, 320.0, 365.0, 35.0, 1.0);
 	SetHUDSize(1920, 1080, 0);
 	wdi_showmedalrank(percentage);
 
@@ -441,7 +446,14 @@ script 400 open //This script handles running the game mode progression, mostly 
 	SetFont("Bigfont");
 	HudMessageBold(s:"Going to next map..."; HUDMSG_FADEINOUT, 0, CR_RED, 320.0, 420.0, 35.0, 1.0, 1.0);
 	ResetInventory();
+	
 	Delay(35 * 5);
+	Wdi_Setinvulnerable(FALSE);
+	//SetPlayerProperty(1,0,PROP_INVULNERABILITY);  //experiment
+	SetPlayerProperty(1,0,PROP_FROZEN); //experiment
+	SetPlayerProperty(1,0,PROP_TOTALLYFROZEN);  //experiment
+	SetPlayerProperty(1,0,PROP_FLY); //experiment
+	delay(1); //experiment
 	Exit_Normal(0);
 	Delay(1);
 	terminate;
@@ -527,6 +539,7 @@ script 401 enter net ClientSide // This script controls HUD-related stuff, like 
 			Case GAMESTATE_GAMEOVER:
 			FadeTo(0, 0, 0, 1.0, 2.0);
 			Delay(70);
+			terminate;
 			break;
 		}
 		Delay(1);
@@ -567,7 +580,7 @@ script 406 death
 			if(playinfo[0] == 0) remainingpercentage = 0;
 			if(playinfo[0] != 0) remainingpercentage = (FixedDiv(Int2Fix(playinfo[0]),Int2Fix(playinfo[1])) * 100) >> 16;
 			UpdateClient(3, 0, remainingpercentage);
-			if(((remainingpercentage <= remaining && remainingpercentage != 0) || (playinfo[0] <= 2 && playinfo[0] > 0)) && !dwindlemessage)
+			if(((remainingpercentage <= REMAINING  && remainingpercentage != 0) || (playinfo[0] <= 2 && playinfo[0] > 0)) && !dwindlemessage)
 			{
 				SetFont("BIGFONT");
 				HudMessageBold(s:"The Innocent's numbers are dwindling..."; HUDMSG_PLAIN|HUDMSG_LOG, 0, CR_RED, 0.5, 0.3, 3.0);
@@ -714,7 +727,7 @@ script 419 enter
 		while(gameinfo[1] == GAMESTATE_GAMEACTIVE)
 		{
 			Delay(1);
-				if(remainingpercentage <= remaining || (playinfo[0] <= 2) || forcetracker == TRUE)
+				if(remainingpercentage <= remaining_tracker || (playinfo[0] <= 2) || forcetracker == TRUE)
 				{
 				 ACS_NamedExecute("seek_inno_marks",0);
 				 terminate;

@@ -144,17 +144,19 @@ int i=PlayerNumber();
 
 script "Powercounter" (void)//m1 cooldown
 {
-	if(CheckInventory("M1warm") == 0)
+	if(CheckInventory("Warm_weapon") == 0)
 	{
 		delay(35);
-		GiveInventory("M1warm",1);
+		GiveInventory("Warm_weapon",1);
 		While( CheckInventory("Powercounter") && gameinfo[1] != GAMESTATE_GAMEOVER )
 		{
 			TakeInventory("Powercounter",1);
 			delay(35);
 		}
-		TakeInventory("M1warm",1);
+		TakeInventory("Warm_weapon",1);
+	}
+	if(gameinfo[1] == GAMESTATE_GAMEOVER){
+		TakeInventory("Powercounter",20);
 	}
 }
-
 

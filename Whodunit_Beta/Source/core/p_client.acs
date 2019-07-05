@@ -116,7 +116,7 @@ script 405 (int who) disconnect
 			if(playinfo[0] == 0) remainingpercentage = 0;
 			if(playinfo[0] != 0) remainingpercentage = (FixedDiv(Int2Fix(playinfo[0]),Int2Fix(playinfo[1])) * 100) >> 16;
 			UpdateClient(3, 0, remainingpercentage);
-			if(((remainingpercentage <= remaining && remainingpercentage != 0) || (playinfo[0] <= 2 && playinfo[0] > 0)) && !dwindlemessage)
+			if(((remainingpercentage <= REMAINING  && remainingpercentage != 0) || (playinfo[0] <= 2 && playinfo[0] > 0)) && !dwindlemessage)
 			{
 				SetFont("BIGFONT");
 				HudMessageBold(s:"The Innocent's numbers are dwindling..."; HUDMSG_PLAIN|HUDMSG_LOG, 0, CR_RED, 0.5, 0.3, 3.0);

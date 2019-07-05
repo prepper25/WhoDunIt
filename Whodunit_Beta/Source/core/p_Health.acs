@@ -2,14 +2,14 @@
 ////////////////////     HEALTH & REGEN    ////////////////////
 //=================================================================
 //SMALL MEDS
-script 751 (void)
+script "health_me" (void)
 {
 	if(GetActorProperty(0, APROP_Health) < GetActorProperty(0, APROP_SpawnHealth))
-	{
-		GiveInventory("SmallKitUsing",1);
-		TakeInventory("SmallKit",1);
-	}
+		SetResultValue(true);
+	else
+		SetResultValue(false);
 }
+
 //BIG MEDS
 script 752 (void)
 {

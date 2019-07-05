@@ -32,7 +32,11 @@ script 421 (void ) net
 		terminate;
 	}
 
-	int blacklisted = GetCVar("wdi_blacklist_rounds");
+	int blacklisted = playercount();
+	
+	if(blacklisted<GetCVar("wdi_blacklist_rounds")){
+		blacklisted=GetCVar("wdi_blacklist_rounds");
+	}
 
 	if (!Active_player[player] && blacklist[player] == blacklisted){
 		Print(s:"\cgyou are already skipped.");
@@ -60,7 +64,7 @@ script 422 enter
 	int player = PlayerNumber();
 	blacklist_once();
 	if(!onoff_Blist[player])
-	blacklist[player] = GetCVar("wdi_blacklist_rounds")-1;
+	blacklist[player] = PlayerCount()-1;
 
 	onoff_Blist[PlayerNumber()] = TRUE;
 }
